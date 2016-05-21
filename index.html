@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">-->
+    <!--  <link href="http://jhfrench.github.io/bootstrap-tree/bootstrap-combined.min.css" rel="stylesheet">-->
+    <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="bootstrapCustom.css">
+    <link rel="stylesheet" type="text/css" href=" https://opensource.keycdn.com/fontawesome/4.6.3/font-awesome.min.css">
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+    <!--<script src="http://jhfrench.github.io/bootstrap-tree/js/bootstrap-tree.js"></script>-->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.0/esri/css/main.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.0/esri/css/calcite/calcite.css">
+    <!--<link rel="stylesheet" type="text/css" href="http://esri.github.io/bootstrap-map-js/src/css/bootstrapmap.css">-->
+    <script src="https://js.arcgis.com/4.0/"></script>
+
+    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=[API KEY]&libraries=places"></script>-->
+    <title>San Mateo County Health Centers</title>
+    <style>
+        html,
+        body,
+        #map {
+            float: right;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 10px;
+        }
+        #legend {
+            float: right;
+        }
+        #leftCol {
+            float:left;
+            width:45%;
+            padding:20px;
+        }
+        #rightCol {
+            float:right;
+            width:45%;
+            padding:20px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="mainWindow">
+    <center><div><h1>San Mateo County Health Services</h1></div></center>
+    <div id="leftCol">
+        <div class="row row-content">
+            <div id="status" class="well"><h3><a type="button" class="btn btn-primary" href="https://www.twitter.com/SMCmobilehack"><i class="fa fa-twitter" aria-hidden="true"></i></a> STATUS</h3>
+                <b><h4>No. of people waiting: 7</h4></b>
+                <!-- <input type="text" class="form-control" id="waitTimeForm">
+                <button type="submit" class="btn btn-primary">Update time</button><br><br> -->
+                <img src="http://imageshack.com/a/img922/5525/5hLUCp.png" height="100" width="200" />
+
+                <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">In transit to 5th &amp; Spring Street <a href="https://twitter.com/hashtag/RedwoodCity?src=hash">#RedwoodCity</a>. Estimated arrival time 12:45pm</p>&mdash; Mobile Clinic Location (@SMCmobilehack) <a href="https://twitter.com/SMCmobilehack/status/734123398968705025" target="_blank">May 21, 2016 (2 hours ago)</a></blockquote>
+                <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <!--<div id="status_display">In transit to 5th & Spring Street. Estimated arrival time 12:45pm</div>-->
+            </div>
+        </div>
+
+        <div class="row row-content">
+            <div>
+                <h3>STAY UPDATED</h3>
+                <div>To get a one-time update of the current mobile clinic location and number of people in line, text 85234</div>
+                <div>To stay updated on delays, fill out the form below. We'll text you with any changes to the schedule above. Standard messaging rates apply.</div>
+
+                <form action="/toText.html" class="form-horizontal" role="form" name="contactForm">
+                    <div class="form-group">
+                        <div>
+                            <label for="telno" class="control-label">Phone number</label>
+                        </div>
+                        <div>
+                            <div class="input-group">
+                                <!--<div class="input-group-addon">(</div>
+                                <input type="tel" class="form-control" id="areacode" placeholder="Area code">
+                                <div class="input-group-addon">)</div>-->
+                                <input type="tel" class="form-control" id="telno" placeholder="Phone number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="clinicList" class="control-label">Which clinic location do you want updates about?</label>
+                        <select id="clinicList">
+                            <option value="Linden">Monday / South San Francisco - Linden & Pine)</option>
+                            <option value="RWCFairOaks">Tuesday / Redwood City - Fair Oaks Community Center (Parking Lot)</option>
+                            <option value="RWC5Spring">Wednesday / Redwood City - 5th & Spring Street</option>
+                            <option value="MCC">Thursday / Menlo Park - Menlo Corporate Center (Parking Lot)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Sign up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="rightCol">
+        <div>
+            <div id="map" style="height:500px;width:800px"></div>
+            <div id="legend"><img src="http://imageshack.com/a/img921/6961/E6vBdL.png"></div><br><br><br>
+
+            <label for="serviceType"> <div><h3>SORT BY SERVICE TYPE</h3></div></label>
+
+            <select id="serviceType">
+                <option value="acute">ACUTE PSYCHIATRIC HOSPITAL</option>
+                <option value="adult">ADULT DAY HEALTH CARE</option>
+                <option value="chronic">CHRONIC DIALYSIS CLINIC</option>
+                <option value="congregated_living">CONGREGATED LIVING HEALTH FACILITY</option>
+                <option value="general_acute">GENERAL ACUTE CARE HOSPITAL</option>
+                <option value="home_health">HOME HEALTH AGENCY</option>
+                <option value="hospice">HOSPICE</option>
+                <option value="intermed_care">INTERMEDIATE CARE FACILITY-DD/H/N</option>
+                <option value="rehabilitation">REHABILITATION CLINIC</option>
+                <option value="skilled">SKILLED NURSING FACILITY</option>
+                <option value="surgical">SURGICAL CLINIC</option>
+                <option value="unlicensed">UNLICENSED/OTHER/MISSING</option>
+            </select>
+
+
+        </div>
+    </div>
+    <div class="form-group">
+        <!-- <ul role="tree">
+            <li class="parent_li" role="treeitem">
+                <div class="checkbox">
+                    <label><input type="checkbox" value="">Veterans' Services</label>
+                </div>
+            </li>
+            <li class="parent_li" role="treeitem">
+                <div class="checkbox">
+                    <label><input type="checkbox" value="">Mobile Health Clinic Scheduled Locations</label>
+                </div>
+            </li>
+            <li class="parent_li" role="treeitem">
+                <div class="checkbox">
+                    <label><input type="checkbox" value="">Mobile Health Clinic (current location)</label>
+            </div>
+            </li>
+            <li class="parent_li" role="treeitem">
+                <div class="checkbox">
+                    <label><input type="checkbox" value="">Other Nearby Services</label>
+                </div>
+                <!--<ul role="group">-->
+        <!--    <li class="parent_li" role="treeitem" style="display: list-item;">-->
+        <!--(other parameters)-->
+        <!--    </li>-->
+        <!--</ul>-->
+    </div>
+</div>
+
+
+
+
+
+<!-- veterans, mhc and nearby services
+
+ form for input new wait time
+ store default wait time for display
+ allow overwrite of new wait time -->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="script.js"></script>
+<script src="twitterEmbed.js"></script>
+<script>
+    $('#waitTimeForm').keyup(function() {
+        $('waitTime').text($(this).val());
+    }).keyup();
+</script>
+</body>
+</html>
